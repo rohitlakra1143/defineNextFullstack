@@ -16,3 +16,4 @@ npm start
 
 npm test
 
+Open http://localhost:3000/getuser and take a look around
