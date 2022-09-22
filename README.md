@@ -3,6 +3,7 @@
 #Common set-up
 
 git clone https://github.com/rohitlakra1143/defineNextFullstack.git
+
 cd defineNextFullstack
 
 npm install
