@@ -6,7 +6,7 @@ const user = {
     "name": "Michel",
     "post": "CEO",
     "lastname": "Kumar",
-    "description": "I am CEO of Adani Goup",
+    "description": "I am CEO of Adani Group",
     "image": "dfghjk"
 }
 const updateUser = {
