@@ -1,50 +1,25 @@
 const User = require('../Models/testimonialUser');
 const Counter = require('../Models/counter')
+const logger = require('../utils/logger')
 
 /*<-------------------------All Users ------------------------------>*/
 
 const getUsers = async function (req, res) {
-    //console.log("Hiiii",req.query)
-    // let name=req.query.name;
-    // console.log(name);
-    const pageNumber = 2;
-    const pageSize = 10;
+  
+    let pageNumber = req.query.pageNumber;
+    let pageSize = req.query.pageSize;
     try {
-
-        // let users=await User.find(req.query);
-        // return res.json(users);
-
-        // if (req.query.name !== undefined) {
-        //     console.log("Inside Query filter :-", req.query);
-        let users = await User.find({ isActive: true })
-        // .sort({ name: 1 })
-        // .select({ name: 1, lastname: 1, email: 1, phoneNumber: 1, age: 1 });
-        console.log("Hiiii", users)
-        return res.json(users)
-        //  }
-        if (isEmpty(req.query)) {
-            console.log("INto Else ")
-            console.log(req.query)
-            const pageNumber = 2;
-            const pageSize = 10;
-            let users = await User
-
-                .find()
-                /*-----------------------------------------------Pagination------------------------ */
-                .skip((pageNumber - 1) * pageSize)//--->to skip all documents of pervious size
-                .limit(pageSize)
-
-                .sort({ name: -1 })
-            //.select({ name: 1, lastname: 1 ,email:1,phoneNumber:1,age:1});
-            console.log((pageNumber - 1) * pageSize)
-            return res.json(users)
-        } else {
-            return res.status(500).json({ status: 500, message: 'Invalid Data' });
+        if(pageNumber==='undefined' || pageSize ==='undefined') {
+            pageNumber=1
+            pageSize=10
         }
-
-
+        let users = await User.find({ isActive: true })
+         .skip((pageNumber - 1) * pageSize)//--->to skip all documents of pervious size
+         .limit(pageSize)
+        return res.status(200).json({success:true,data:{data:users,total:users.length}})
     } catch (e) {
-        return res.json({ success: false, message: `${e}` });
+        logger.log('error',`${e.message}`)
+        return res.status(404).json({ success: false, message: `Error Fetching Data!` });
     }
 
 }
@@ -56,10 +31,10 @@ function isEmpty(obj) {
 
 const createUser = async function (req, res) {
     console.log(req.body);
-    console.log("Creating User........")
+    logger.logger.log("info","Creating User........")
     try {
         let id = await getNextSequence("userId")
-        console.log("Id ", id)
+        
         const user = new User();
         
         user.testimonialId = id,
@@ -71,15 +46,14 @@ const createUser = async function (req, res) {
         
 
         const usersaved = await user.save()
-        return res.json(usersaved)
-        // .then((result)=>{
-        //     console.log('User created.....')
-        //     return res.json(result);})
-        // .catch(err=>{
-        //     console.log("error creating.....")
-        //     return res.json({err:err.message,success:false})});
+        return res.status(201).json({
+            success: true,
+            message: 'User created successfully',
+            user: usersaved,
+           });
     } catch (e) {
-        return res.status(500).json({ error: e.message, success: false });
+        logger.logger.log("error",e.message)
+        return res.status(500).json({ message: "Internal Server Error", success: false,error:e.message });
     }
 }
 
@@ -97,40 +71,47 @@ const updateUser = async function (req, res) {
                 image: req.body.image,
 
             });
-            const result = await user.save();
-            console.log(result)
-            return res.json({ success: true, user: result });
+            const updateUser = await user.save();
+            return res.status(200).json({
+                success: true,
+                message: 'User Updated successfully',
+                user: updateUser,
+               });
         } else {
             throw new Error("No Such User");
         }
 
     } catch (e) {
-        return res.json({ success: false, Error: e.message })
+
+        logger.logger.log("error",e.message)
+
+        return res.json({ success: false, message:'Error Updating User',error:e.message })
     }
 }
 
 /*<-------------------------deleting------------------------------>*/
 const deleteUser = async function (req, res) {
-    console.log("Hiiiii......", req.params.id);
     try {
         const isUser = await User.findOne({ testimonialId: req.params.id });
 
+        
         if (isUser) {
-            console.log("Hiiiii...22222...Inside ", isUser);
+            
+            if(isUser.isActive===false)  throw new Error("Invalid User");
+
             isUser.set({ isActive: false });
             const result = await isUser.save();
             console.log(result)
-            return res.json({ success: true, user: result });
-
-            // deleteOne({ name: req.params.name })
-            //    .then(() => { return res.json({ success: 'true', message: `User deleted` }) })
+            return res.status(200).json({ success: true, user: result,message:'User Deleted successfully' });
 
         } else {
             throw new Error("Invalid User");
         }
 
     } catch (e) {
-        return res.status(404).json({ err: e.message, success: false });
+        logger.logger.log("error",e.message)
+
+        return res.status(404).json({ message:"Invalid User Details", success: false,error:e.message });
     }
 
 }
@@ -142,7 +123,6 @@ async function getNextSequence(name) {
             { id: name },
             { $inc: { seq: 1 } },
             { new: true });
-        // .then(async (err,val)=>{
 
         if (seqNo == null) {
             const newVal = new Counter({ id: "userId", seq: 1 })

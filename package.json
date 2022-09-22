@@ -6,7 +6,7 @@
   "scripts": {
     "start": "NODE_ENV=dev nodemon server",
     "start-prod": "NODE_ENV=prod nodemon server",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --forceExit"
   },
   "keywords": [],
   "author": "",
@@ -17,8 +17,9 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "mongodb": "^3.6.2",
+    "mongoose": "^6.6.1",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4",
-    "mongoose": "^6.6.1"
+    "winston": "^3.8.2"
   }
 }
