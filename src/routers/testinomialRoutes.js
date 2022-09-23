@@ -1,6 +1,6 @@
 const express=require('express');
 
-const UserController=require('../Controllers/testimonialController');
+const UserController=require('../controllers/testimonialController');
 const router=express.Router();
 
 router.get('/getUser',UserController.getUsers);
