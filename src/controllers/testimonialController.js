@@ -1,5 +1,5 @@
-const User = require('../Models/testimonialUser');
-const Counter = require('../Models/counter')
+const User = require('../models/testimonialUser');
+const Counter = require('../models/counter')
 const logger = require('../utils/logger')
 
 /*<-------------------------All Users ------------------------------>*/
@@ -10,7 +10,7 @@ const getUsers = async function (req, res) {
     let pageSize = req.query.pageSize;
     try {
         if(isEmpty(req.query)) {
-            
+
             let users = await User.find({ isActive: true })
             return res.status(200).json({success:true,data:{data:users,total:users.length}})
 
