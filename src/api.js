@@ -6,7 +6,7 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const serverless = require('serverless-http')
 const mdbClient = require('./config/mongoConfig');
-const api=require('./routers/api')
+const api=require('./routers/testinomialRoutes')
 
 
 const env = process.env.NODE_ENV;
