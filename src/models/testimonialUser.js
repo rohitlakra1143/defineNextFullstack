@@ -8,7 +8,7 @@ const TestimonialSchema = new mongoose.Schema({
     image: { type: String },
     post: {
         type: String, required: true,
-        enum: ['CEO', 'CTO']
+       // enum: ['CEO', 'CTO']
     },
     isActive: { type: Boolean, default: true },
     createdOn: { type: Date, default: Date.now },

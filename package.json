@@ -4,9 +4,10 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "NODE_ENV=dev nodemon server",
+    "start": "./node_modules/.bin/netlify-lambda serve src",
+    "build": "./node_modules/.bin/netlify-lambda build src",
     "start-prod": "NODE_ENV=prod nodemon server",
-    "test": "jest --forceExit"
+    "test": "jest"
   },
   "keywords": [],
   "author": "",
@@ -15,11 +16,15 @@
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.18.1",
+    "jest": "^29.0.3",
     "mongodb": "^3.6.2",
     "mongoose": "^6.6.1",
     "morgan": "^1.10.0",
+    "netlify-lambda": "^2.0.15",
     "nodemon": "^2.0.4",
+    "serverless-http": "^3.0.2",
+    "supertest": "^6.2.4",
     "winston": "^3.8.2"
   }
 }

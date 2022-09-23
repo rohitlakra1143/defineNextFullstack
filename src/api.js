@@ -4,14 +4,14 @@ const cors = require('cors');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
-
-const mdbClient = require('./src/config/mongoConfig');
-const api=require('./src/routers/api')
+const serverless = require('serverless-http')
+const mdbClient = require('./config/mongoConfig');
+const api=require('./routers/api')
 
 
 const env = process.env.NODE_ENV;
 
-const port = process.env.NODE_ENV == 'dev' ? 3000 : 3300;
+//const port = process.env.NODE_ENV == 'dev' ? 3000 : 3300;
 
 app.use(cors({
     origin: "*",
@@ -26,22 +26,24 @@ app.use(cors({
   app.use(bodyParser.urlencoded({ extended: true }));
 
   // Declare a route
-app.get('/', async (request, reply) => {
-    reply.send({ hello: `world ${env}` })
-  });
+// app.get('/', async (request, reply) => {
+//     reply.send({ hello: `world ${env}` })
+//   });
 
-  app.use('/api',api);
+  //app.use('/api',api);
+  app.use('/.netlify/functions/api',api)
   // Run the server!
 const start = async () => {
     try {
       await mdbClient();
-      await app.listen(port)
-      console.info(`server ${env} listening on ${port}`)
+     // await app.listen(port)
+      //console.info(`server ${env} listening on ${port}`)
     } catch (err) {
       console.error(err)
       process.exit(1)
     }
   }
   start();
-
   module.exports = app;
+  module.exports.handler = serverless(app)
+  

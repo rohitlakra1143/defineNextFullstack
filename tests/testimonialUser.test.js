@@ -1,5 +1,5 @@
 const supertest = require('supertest');
-const app = require('../server');
+const app = require('../src/api');
 const TestimonialUser = require('../src/models/testimonialUser')
 
 const user = {
@@ -23,7 +23,7 @@ describe('Testing TestimonialUser Apis', () => {
        // describe('when details is valid', () => {
             //test('should return success true', async () => {
                 const res = await supertest(app)
-                    .post('/api/createUser')
+                    .post('/.netlify/functions/api/createUser')
                     .send(user)
                     .expect(201);
                 expect(res.body.message).toBe('User created successfully');
@@ -37,14 +37,14 @@ describe('Testing TestimonialUser Apis', () => {
     describe('Get All Testimonial User', () => {
         test('should return All Users', async () => {
             const res = await supertest(app)
-                .get('/api/getuser')
+                .get('/.netlify/functions/api/getuser')
                 .expect(200);
         });
     });
     describe('Update Testimonial User', () => {
         test('Should Update user', async () => {
             const res = await supertest(app)
-                .put(`/api/updateUser/`+testimonialId)
+                .put(`/.netlify/functions/api/updateUser/`+testimonialId)
                 .send(updateUser)
                 .expect(200);
                 expect(res.body.user.testimonialId).toBe(testimonialId);
@@ -54,7 +54,7 @@ describe('Testing TestimonialUser Apis', () => {
     describe('Delete Testimonial User', () => {
         test('Should Delete User', async () => {
             const res = await supertest(app)
-                .delete(`/api/deleteUser/`+testimonialId)
+                .delete(`/.netlify/functions/api/deleteUser/`+testimonialId)
                 .expect(200);
               expect(res.body.message).toBe('User Deleted successfully');
               expect(res.body.user.isActive).toBe(false);

@@ -9,9 +9,11 @@ const getUsers = async function (req, res) {
     let pageNumber = req.query.pageNumber;
     let pageSize = req.query.pageSize;
     try {
-        if(pageNumber==='undefined' || pageSize ==='undefined') {
-            pageNumber=1
-            pageSize=10
+        if(isEmpty(req.query)) {
+            
+            let users = await User.find({ isActive: true })
+            return res.status(200).json({success:true,data:{data:users,total:users.length}})
+
         }
         let users = await User.find({ isActive: true })
          .skip((pageNumber - 1) * pageSize)//--->to skip all documents of pervious size
